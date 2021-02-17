@@ -17,6 +17,7 @@ class CreateEventsTable extends Migration
             $table->id();
             $table->string('judul');
             $table->string('code');
+            $table->string('status');
             $table->timestamps();
         });
     }
