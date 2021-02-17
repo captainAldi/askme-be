@@ -6,6 +6,7 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Hash;
 
 use App\Models\Question;
+use App\Models\Event;
 
 class QuestionController extends Controller
 {

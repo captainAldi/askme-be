@@ -19,10 +19,12 @@ class EventTableSeeder extends Seeder
             [
                 "judul"  => "All Minds Januari 2019",
                 "code" => "am-01-2019",
+                "status" => "active"
             ],
             [
                 "judul"  => "All Minds Februari 2020",
                 "code" => "am-02-2019",
+                "status" => "not active"
             ],
         ];
 

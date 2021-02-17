@@ -26,12 +26,14 @@ class EventController extends Controller
     {
 
         // Events 
-        $dataEvents = Event::where('code', $request->input('event_code'))->first();
+        $dataEvents = Event::where('code', $request->input('event_code'))
+            ->where('status', '=', 'active')
+            ->first();
 
         if (!$dataEvents) {
             return response()->json([
-                'message' => 'Event Tidak Ada !',
-            ], 404);
+                'message' => 'Event Tidak Ada / Sudah di Tutup!',
+            ], 403);
         }
 
         return response()->json([
