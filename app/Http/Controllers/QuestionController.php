@@ -8,6 +8,9 @@ use Illuminate\Support\Facades\Hash;
 use App\Models\Question;
 use App\Models\Event;
 
+use App\Events\QuestionCreatedEvent;
+use App\Events\QuestionLikedEvent;
+
 class QuestionController extends Controller
 {
     public function getAllQuestions(Request $request, $event)
@@ -27,7 +30,7 @@ class QuestionController extends Controller
         $dataQuestions = $dataQuestions->orderBy($sortBy, 'desc');
 
         // Get the Data
-        $dataQuestions =$dataQuestions->get();
+        $dataQuestions = $dataQuestions->get();
 
         return response()->json([
             'message' => 'Data Berhasil di Ambil !',
@@ -55,6 +58,8 @@ class QuestionController extends Controller
         $dataPertanyaan->like = 0;
         $dataPertanyaan->save();
 
+        event(new QuestionCreatedEvent($dataPertanyaan));
+
     }
 
     public function likeQuestions($id)
@@ -66,5 +71,7 @@ class QuestionController extends Controller
         $dataPertanyaan = Question::find($id);
         $dataPertanyaan->like = $dataPertanyaan->like + 1;
         $dataPertanyaan->save();
+
+        event(new QuestionLikedEvent($dataPertanyaan));
     }
 }

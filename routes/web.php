@@ -2,6 +2,11 @@
 
 /** @var \Laravel\Lumen\Routing\Router $router */
 
+
+use App\Events\QuestionCreatedEvent;
+use App\Events\QuestionLikedEvent;
+use App\Models\Question;
+
 /*
 |--------------------------------------------------------------------------
 | Application Routes
@@ -15,6 +20,23 @@
 
 $router->get('/', function () use ($router) {
     return $router->app->version();
+});
+
+$router->get('/tesAja', function () use ($router) {
+    $dataBaru = Question::first();
+    event(new QuestionCreatedEvent($dataBaru));
+    //QuestionEvent::dispatch($dataBaru);
+    return $dataBaru;
+});
+
+$router->get('/tesLike', function () use ($router) {
+    $dataPertanyaan = Question::find(1);
+    $dataPertanyaan->like = $dataPertanyaan->like + 1;
+    $dataPertanyaan->save();
+
+    event(new QuestionLikedEvent($dataPertanyaan));
+    //QuestionEvent::dispatch($dataBaru);
+    return $dataPertanyaan;
 });
 
 // API
