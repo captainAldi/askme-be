@@ -9,6 +9,6 @@ class Event extends Model
     protected $guarded = [];
 
     public function questions(){
-        return $this->hasMany('App\Models\Question');
+        return $this->hasMany('App\Models\Question', 'event_id', 'id');
     }
 }

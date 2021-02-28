@@ -54,14 +54,24 @@ $router->group(['prefix' => 'api/v1/' ], function() use ($router) {
         $router->post("/questions/create", "QuestionController@createQuestions");
 
         // -- Event for All --
-        //$router->post("/events", "EventController@getAllEvents");
         $router->post("/events/enter", "EventController@getSpecificEvent");
 
     // -- Logged In --
 
-        // -- Get Events --
+        $router->group(['middleware' => ['login'] ], function() use ($router) {
 
-        // -- Get Questions --
+            // -- Events --
+            $router->get("/admin/events", "EventController@getAllEvents");
+            $router->get("/admin/event/{id}", "EventController@getKhususEvent");
+            $router->post("/admin/event/create", "EventController@createEvent");
+            $router->patch("/admin/event/update/{id}", "EventController@editEvent");
+            $router->delete("/admin/event/{id}", "EventController@deleteEvent");
+        
+
+            // -- Get Questions --
+            $router->get("/admin/questions", "QuestionController@getSemuaQuestions");
+
+       });
 
 
 });

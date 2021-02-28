@@ -1,7 +1,7 @@
 var http = require('http').Server();
 var io = require('socket.io')(http, {
   cors: {
-    origin: "http://localhost:8080",
+    origin: process.env.VUE_APP_URL,
     methods: ["GET", "POST"]
   }
 });

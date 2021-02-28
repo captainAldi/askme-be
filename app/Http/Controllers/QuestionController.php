@@ -74,4 +74,69 @@ class QuestionController extends Controller
 
         event(new QuestionLikedEvent($dataPertanyaan));
     }
+
+    public function getSemuaQuestions(Request $request) 
+    {
+        //Variable Pencarian
+        $cari_event = $request->input('event');
+        $cari_pertanyaan = $request->input('pertanyaan');
+        $cari_penanya = $request->input('penanya');
+
+        $tipe_sort = 'desc';
+        $var_sort = 'created_at';
+
+        // Semua Questions
+        $semuaQuestions = Question::query();
+
+        // Kondisi Search
+        if ($cari_event != '') {
+            $semuaQuestions = $semuaQuestions->whereHas('event', function($query) use($cari_event) {
+                return $query->where('code', '=', $cari_event);
+            });  
+        }
+
+        if ($cari_pertanyaan != '') {
+            $semuaQuestions = $semuaQuestions->where('judul', 'LIKE', '%'.$cari_pertanyaan.'%');
+        }
+
+        if ($cari_penanya != '') {
+            $semuaQuestions = $semuaQuestions->where('penanya', 'LIKE', '%'.$cari_penanya.'%');
+        }
+
+        if( $request->has('sortbydesc') || $request->has('sortby') ) {
+            $tipe_sort = $request->input('sortbydesc');
+            $var_sort = $request->input('sortby');
+
+            $semuaQuestions = $semuaQuestions
+                                ->select('questions.*')
+                                ->join('events', 'questions.event_id', '=', 'events.id')
+                                ->orderBy('questions.'.$var_sort, $tipe_sort);
+
+            // $semuaQuestions = $semuaQuestions->event()->orderBy($var_sort, $tipe_sort);
+        }
+
+        // Eager Loading
+        $semuaQuestions = $semuaQuestions->with('event');
+
+        //Tampilkan
+        
+        $set_pagination = $request->input('per_page');
+
+        if ($set_pagination != '') {
+            $semuaQuestions = $semuaQuestions
+                        ->paginate($set_pagination);
+        } else {
+            $semuaQuestions = $semuaQuestions
+                        ->paginate(10);
+        }
+        
+
+        //Show the Data
+        return response()->json([
+            'message' => 'Data Berhasil di Ambil',
+            'data'  => $semuaQuestions,
+        ], 200);
+
+
+    }
 }
